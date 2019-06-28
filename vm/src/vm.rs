@@ -307,12 +307,7 @@ impl VirtualMachine {
         sys_modules.get_item(module.to_string(), self).or_else(|_| {
             let import_func = self
                 .get_attribute(self.builtins.clone(), "__import__")
-                .map_err(|_| {
-                    self.new_exception(
-                        self.ctx.exceptions.import_error.clone(),
-                        "__import__ not found".to_string(),
-                    )
-                })?;
+                .map_err(|_| self.new_import_error("__import__ not found".to_string()))?;
             self.invoke(
                 import_func,
                 vec![
